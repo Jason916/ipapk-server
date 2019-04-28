@@ -7,6 +7,7 @@ var exit = process.exit;
 var pkg = require('./package.json');
 var version = pkg.version;
 var AdmZip = require("adm-zip");
+var JSZip = require("jszip");
 var program = require('commander');
 var express = require('express');
 var mustache = require('mustache');
@@ -204,10 +205,6 @@ function main() {
   app.post('/upload', function(req, res) {
     var form = new multiparty.Form();
     form.parse(req, function(err, fields, files) {
-      if (err) {
-        errorHandler(err, res);
-        return;
-      }
       var changelog;
       if (fields.changelog) {
         changelog = fields.changelog[0];
@@ -286,12 +283,13 @@ function parseAppAndInsertToDb(filePath, changelog, callback, errorCallback) {
 
 function storeApp(fileName, guid, callback) {
   var new_path;
+  var tmp_path = fileName;
   if (path.extname(fileName) === ".ipa") {
     new_path = path.join(ipasDir, guid + ".ipa");
   } else if (path.extname(fileName) === ".apk") {
     new_path = path.join(apksDir, guid + ".apk");
   }
-  fs.rename(fileName,new_path,callback)
+  fs.rename(fileName, new_path, callback)
 }
 
 function parseIpa(filename) {
@@ -353,26 +351,25 @@ function extractApkIcon(filename,guid) {
 
       iconPath = iconPath.replace(/'/g,"")
       var tmpOut = iconsDir + "/{0}.png".format(guid)
-      var zip = new AdmZip(filename); 
-      var ipaEntries = zip.getEntries();
-      var found = false
-      ipaEntries.forEach(function(ipaEntry) {
-        if (ipaEntry.entryName.indexOf(iconPath) != -1) {
-          var buffer = new Buffer(ipaEntry.getData());
-          if (buffer.length) {
-            found = true
-            fs.writeFile(tmpOut, buffer,function(err){  
-              if(err){  
-                  reject(err)
+      
+      fs.readFile(filename, function(err, data){
+        if (err) throw err;
+        JSZip.loadAsync(data).then(function (zip){
+          zip.forEach(function(relativePath, zipEntry){
+            if (zipEntry.name.indexOf(iconPath) != -1) {
+              var buffer = new Buffer.from(zipEntry._data.compressedContent);
+              if (buffer.length) {
+                fs.writeFile(tmpOut, buffer, function(err){
+                  if (err){
+                    reject(err)
+                  }
+                  resolve({"success": true})
+                })
               }
-              resolve({"success":true})
-            })
-          }
-        }
-      })
-      if (!found) {
-        reject("can not find icon ")
-      }
+            }
+          })
+        });
+      });
     });
   })
 }
@@ -382,17 +379,23 @@ function extractIpaIcon(filename,guid) {
     var tmpOut = iconsDir + "/{0}.png".format(guid)
     var zip = new AdmZip(filename); 
     var ipaEntries = zip.getEntries();
+    var exeName = '';
+    if (process.platform == 'darwin') {
+      exeName = 'pngdefry-osx';
+    } else {
+      exeName = 'pngdefry-linux';
+    }
     var found = false;
     ipaEntries.forEach(function(ipaEntry) {
       if (ipaEntry.entryName.indexOf('AppIcon60x60@2x.png') != -1) {
         found = true;
-        var buffer = new Buffer(ipaEntry.getData());
+        var buffer = new Buffer.from(ipaEntry.getData());
         if (buffer.length) {
           fs.writeFile(tmpOut, buffer,function(err){  
             if(err){  
               reject(err)
             } else {
-              var execResult = exec(path.join(__dirname, 'bin','pngdefry -s _tmp ') + ' ' + tmpOut)
+              var execResult = exec(path.join(__dirname, 'bin', exeName + ' -s _tmp ') + ' ' + tmpOut)
               if (execResult.stdout.indexOf('not an -iphone crushed PNG file') != -1) {
                 resolve({"success":true})
               } else {
@@ -414,6 +417,10 @@ function extractIpaIcon(filename,guid) {
             }
           })
         }
+      } else {
+        var picSource = fs.readFileSync(iconsDir + '/private_icon.png');
+        fs.writeFileSync(tmpOut, picSource);
+        resolve({"success":true})
       }
     })
     if (!found) {

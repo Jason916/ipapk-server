@@ -23,11 +23,11 @@ title
   text-decoration: none;
 }
 html,body{ width:100%; }
-body{ 	
-	max-width:640px; 
+body{
+	max-width:640px;
 	overflow-y:scroll;
-	font-family:Helvetica, STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Arial; 
-	margin:0 auto; 
+	font-family:Helvetica, STHeiti STXihei, Microsoft JhengHei, Microsoft YaHei, Arial;
+	margin:0 auto;
 	font-size:1.4rem;}
 a {
   color: #0076cc;
@@ -71,12 +71,12 @@ a {
 .selected_title {color: darkgray;}
 .platform_wrapper>span{ padding:0.6rem 0.6rem;display: flex; display: -webkit-flex; justify-content: space-around; padding-bottom:0; font-size:2rem; position:relative;}
 .platform_wrapper>li{ width:100%; padding-top:0.8rem; padding-bottom:0.8rem; border-bottom:1px solid #ccc;}
-.platform_wrapper .app_info{ padding: 0.5rem 0rem; height:5.4rem;}
-.platform_wrapper img{ float:left; width:5.4rem; height:5.4rem; margin-right:0.8rem; border:1px solid #ccc; border-radius:20%; box-sizing:border-box;}
+.platform_wrapper .app_info{ padding: 0.5rem 0rem; height:6.6rem;}
+.platform_wrapper img{ float:left; width:4.4rem; height:4.4rem; margin-right:0.8rem; border:1px solid #ccc; border-radius:20%; box-sizing:border-box;}
 
 .info_box{max-width:50%; height: 100%; float:left; padding-top:0.2rem;}
 .info_box span{ color:#aaa; padding-right:0.2rem; font-size:1rem; }
-.platform_wrapper .down_btn{ float:right; width:5rem; height:2.6rem; margin:1.4rem 0; font-size:1.2rem;  border:0.12rem solid #0076cc; border-radius:0.4rem; outline:none;  background:#fff; color:#0076cc; text-align:center; line-height:2.6rem;}
+.platform_wrapper .down_btn{ float:right; width:4rem; height:2.6rem; margin:1.4rem 0; font-size:1.2rem;  border:0.12rem solid #0076cc; border-radius:0.4rem; outline:none;  background:#fff; color:#0076cc; text-align:center; line-height:2.6rem;}
 
 .changelog {display: block;overflow:hidden; text-overflow:ellipsis; }
 .moreAppButton {width:100%;padding: 0.3rem; margin-top: 10px; margin-bottom: 10px; text-align: center;font-size:1.2rem;background-color:lightgray; border-radius:0.4rem;color:#989898;width: 100%; height: 2rem;line-height: 2rem;}

@@ -15,12 +15,12 @@
 
 # 安装
 ```
-$ npm install -g ipapk-server
+$ npm install -g ipapk-server-v2
 ```
 
 国内可能无法访问S3，使用淘宝镜像下载预编译的sqlite3（Ubuntu下镜像无效）
 ```
-$ npm install -g ipapk-server --node_sqlite3_binary_host_mirror=https://npm.taobao.org/mirrors
+$ npm install -g ipapk-server-v2 --node_sqlite3_binary_host_mirror=https://npm.taobao.org/mirrors
 ```
 
 Ubuntu 64 bit 需要另外安装

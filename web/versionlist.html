@@ -5,11 +5,11 @@
 <title>app下载</title>
 <!--H5页面窗口自动调整到设备宽度，并禁止用户缩放页面-->
 	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-<!--将网站添加到主屏幕快速启动方式，仅针对ios的safari顶端状态条的样式  -->  
+<!--将网站添加到主屏幕快速启动方式，仅针对ios的safari顶端状态条的样式  -->
     <meta content="black" name="apple-mobile-web-app-status-bar-style">
 <!--忽略将页面中的数字识别为电话号码-->
     <meta content="telephone=no" name="format-detection">
-<!--忽略Android平台中对邮箱地址的识别 -->   
+<!--忽略Android平台中对邮箱地址的识别 -->
     <meta name="format-detection" content="email=no" />
     <!--winphone系统a、input标签被点击时产生的半透明灰色背景怎么去掉-->
     <meta name="msapplication-tap-highlight" content="no">
@@ -32,14 +32,15 @@
                     <div class="app_info">
                         <img :src="app.icon">
                         <div class="info_box">
-                            <span class="app_name">{{app.name}}</span>
-                            <span class="version_number">{{app.version}}({{app.build}})</span><br>
-                            <span>更新:</span>
-                            <span class="update_time">{{app.uploadTime}}</span>
+                            <span class="app_name" v-if="is_android">{{app.name}}</span>
+                            <span class="version_number" v-if="is_android">{{app.version}}({{app.build}})</span>
+                            <br v-if="is_android">
+                            <span class="update_time">更新:{{app.uploadTime}}</span>
                             <br><span class="changelog">{{app.changelog ? app.changelog : ""}}</span>
                         </div>
                         <a class="down_btn" :href="app.url">下载</a>
                     </div>
+                    <hr>
                 </li>
             </ul>
             <div class="moreAppButton" v-on:click="loadApps" v-if="show_load_more_apps_button"><span>加载更多</span></div>

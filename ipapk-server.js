@@ -15,7 +15,7 @@ var strftime = require('strftime');
 var underscore = require('underscore');
 var os = require('os');
 var multiparty = require('multiparty');
-var sqlite3 = require('sqlite3');  
+var sqlite3 = require('sqlite3');
 var uuidV4 = require('uuid/v4');
 var extract = require('ipa-extract-info');
 var apkParser3 = require("apk-parser3");
@@ -66,7 +66,7 @@ createFolderIfNeeded(ipasDir)
 createFolderIfNeeded(apksDir)
 createFolderIfNeeded(iconsDir)
 function createFolderIfNeeded (path) {
-  if (!fs.existsSync(path)) {  
+  if (!fs.existsSync(path)) {
     fs.mkdirSync(path, function (err) {
         if (err) {
             console.log(err);
@@ -155,7 +155,8 @@ function main() {
       res.set('Content-Type', 'application/json');
       var page = parseInt(req.params.page ? req.params.page : 1);
       if (req.params.platform === 'android' || req.params.platform === 'ios') {
-        queryDB("select * from info where platform=? group by bundleID order by uploadTime desc limit ?,?", [req.params.platform, (page - 1) * pageCount, page * pageCount], function(error, result) {
+        // group by bundleID
+        queryDB("select * from (select * from info where platform=? order by uploadTime desc limit ?,?) group by bundleID", [req.params.platform, (page - 1) * pageCount, page * pageCount], function(error, result) {
           if (result) {
             res.send(mapIconAndUrl(result))
           } else {
@@ -351,7 +352,7 @@ function extractApkIcon(filename,guid) {
 
       iconPath = iconPath.replace(/'/g,"")
       var tmpOut = iconsDir + "/{0}.png".format(guid)
-      
+
       fs.readFile(filename, function(err, data){
         if (err) throw err;
         JSZip.loadAsync(data).then(function (zip){
@@ -377,7 +378,7 @@ function extractApkIcon(filename,guid) {
 function extractIpaIcon(filename,guid) {
   return new Promise(function(resolve,reject){
     var tmpOut = iconsDir + "/{0}.png".format(guid)
-    var zip = new AdmZip(filename); 
+    var zip = new AdmZip(filename);
     var ipaEntries = zip.getEntries();
     var exeName = '';
     if (process.platform == 'darwin') {
@@ -391,15 +392,15 @@ function extractIpaIcon(filename,guid) {
         found = true;
         var buffer = new Buffer.from(ipaEntry.getData());
         if (buffer.length) {
-          fs.writeFile(tmpOut, buffer,function(err){  
-            if(err){  
+          fs.writeFile(tmpOut, buffer,function(err){
+            if(err){
               reject(err)
             } else {
               var execResult = exec(path.join(__dirname, 'bin', exeName + ' -s _tmp ') + ' ' + tmpOut)
               if (execResult.stdout.indexOf('not an -iphone crushed PNG file') != -1) {
                 resolve({"success":true})
               } else {
-                fs.remove(tmpOut,function(err){  
+                fs.remove(tmpOut,function(err){
                   if(err){
                     reject(err)
                   } else {

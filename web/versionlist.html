@@ -32,9 +32,9 @@
                     <div class="app_info">
                         <img :src="app.icon">
                         <div class="info_box">
-                            <span class="app_name" v-if="is_android">{{app.name}}</span>
-                            <span class="version_number" v-if="is_android">{{app.version}}({{app.build}})</span>
-                            <br v-if="is_android">
+                            <span class="app_name" v-if="is_ios">{{app.name}}</span>
+                            <span class="version_number" v-if="is_ios">{{app.version}}({{app.build}})</span>
+                            <br v-if="is_ios">
                             <span class="update_time">更新:{{app.uploadTime}}</span>
                             <br><span class="changelog">{{app.changelog ? app.changelog : ""}}</span>
                         </div>

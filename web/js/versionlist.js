@@ -31,8 +31,8 @@ var main = new Vue({
         has_data: function () {
             return this.apps.length > 0
         },
-        is_android: function () {
-            return this.selected_paltform !== "android"
+        is_ios: function () {
+            return this.selected_paltform === "ios"
         }
     }
 });

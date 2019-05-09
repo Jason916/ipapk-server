@@ -1,6 +1,6 @@
 {
   "name": "ipapk-server-v2",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Create a HTTPS Server to install ipa and apk locally",
   "dependencies": {
     "adm-zip": "^0.4.12",

@@ -56,15 +56,15 @@ var ipAddress = program.host || underscore
   .address;
 
 var pageCount = 5;
-var serverDir = os.homedir() + "/.ipapk-server/"
+var serverDir = os.homedir() + "/.ipapk-server/";
 var globalCerFolder = serverDir + ipAddress;
 var ipasDir = serverDir + "ipa";
 var apksDir = serverDir + "apk";
 var iconsDir = serverDir + "icon";
-createFolderIfNeeded(serverDir)
-createFolderIfNeeded(ipasDir)
-createFolderIfNeeded(apksDir)
-createFolderIfNeeded(iconsDir)
+createFolderIfNeeded(serverDir);
+createFolderIfNeeded(ipasDir);
+createFolderIfNeeded(apksDir);
+createFolderIfNeeded(iconsDir);
 function createFolderIfNeeded (path) {
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path, function (err) {
@@ -102,7 +102,7 @@ excuteDB("CREATE TABLE IF NOT EXISTS info (\
 /**
  * Main program.
  */
-process.exit = exit
+process.exit = exit;
 
 // CLI
 var basePath = "https://{0}:{1}".format(ipAddress, port);
@@ -221,7 +221,7 @@ function main() {
           if (error) {
             errorHandler(error,res)
           }
-          console.log(info)
+          console.log(info);
           res.send(info)
         })
 
@@ -235,7 +235,7 @@ function main() {
 }
 
 function errorHandler(error, res) {
-  console.log(error)
+  console.log(error);
   res.send({"error":error})
 }
 
@@ -248,27 +248,27 @@ function mapIconAndUrl(result) {
       item.url = "{0}/apk/{1}.apk".format(basePath, item.guid);
     }
     return item;
-  })
+  });
   return items;
 }
 
 function parseAppAndInsertToDb(filePath, changelog, callback, errorCallback) {
   var guid = uuidV4();
-  var parse, extract
+  var parse, extract;
   if (path.extname(filePath) === ".ipa") {
-    parse = parseIpa
+    parse = parseIpa;
     extract = extractIpaIcon
   } else if (path.extname(filePath) === ".apk") {
-    parse = parseApk
+    parse = parseApk;
     extract = extractApkIcon
   } else {
-    errorCallback("params error")
+    errorCallback("params error");
     return;
   }
   Promise.all([parse(filePath),extract(filePath,guid)]).then(values => {
-    var info = values[0]
-    info["guid"] = guid
-    info["changelog"] = changelog
+    var info = values[0];
+    info["guid"] = guid;
+    info["changelog"] = changelog;
     excuteDB("INSERT INTO info (guid, platform, build, bundleID, version, name, changelog) VALUES (?, ?, ?, ?, ?, ?, ?);",
     [info["guid"], info["platform"], info["build"], info["bundleID"], info["version"], info["name"], changelog],function(error){
         if (!error){
@@ -299,12 +299,12 @@ function parseIpa(filename) {
     extract(fd, function(err, info, raw){
     if (err) reject(err);
       var data = info[0];
-      var info = {}
-      info["platform"] = "ios"
+      var info = {};
+      info["platform"] = "ios",
       info["build"] = data.CFBundleVersion,
       info["bundleID"] = data.CFBundleIdentifier,
       info["version"] = data.CFBundleShortVersionString,
-      info["name"] = data.CFBundleName
+      info["name"] = data.CFBundleName,
       resolve(info)
     });
   });
@@ -313,14 +313,14 @@ function parseIpa(filename) {
 function parseApk(filename) {
   return new Promise(function(resolve,reject){
     apkParser3(filename, function (err, data) {
-        var package = parseText(data.package)
+        var package = parseText(data.package);
         var info = {
           "name":data["application-label"].replace(/'/g,""),
           "build":package.versionCode,
           "bundleID":package.name,
           "version":package.versionName,
           "platform":"android"
-        }
+        };
         resolve(info)
     });
   });
@@ -350,14 +350,14 @@ function extractApkIcon(filename,guid) {
         reject("can not find icon ");
       }
 
-      iconPath = iconPath.replace(/'/g,"")
-      var tmpOut = iconsDir + "/{0}.png".format(guid)
+      iconPath = iconPath.replace(/'/g,"");
+      var tmpOut = iconsDir + "/{0}.png".format(guid);
 
       fs.readFile(filename, function(err, data){
         if (err) throw err;
         JSZip.loadAsync(data).then(function (zip){
           zip.forEach(function(relativePath, zipEntry){
-            if (zipEntry.name.indexOf(iconPath) != -1) {
+            if (zipEntry.name.indexOf(iconPath) !== -1) {
               var buffer = new Buffer.from(zipEntry._data.compressedContent);
               if (buffer.length) {
                 fs.writeFile(tmpOut, buffer, function(err){
@@ -377,12 +377,12 @@ function extractApkIcon(filename,guid) {
 
 function extractIpaIcon(filename,guid) {
   return new Promise(function(resolve,reject){
-    var tmpOut = iconsDir + "/{0}.png".format(guid)
+    var tmpOut = iconsDir + "/{0}.png".format(guid);
     var zip = new AdmZip(filename);
     var ipaEntries = zip.getEntries();
     var found = false;
     ipaEntries.forEach(function(ipaEntry) {
-      if (ipaEntry.entryName.indexOf('AppIcon60x60@2x.png') != -1) {
+      if (ipaEntry.entryName.indexOf('AppIcon60x60@2x.png') !== -1) {
         found = true;
         var buffer = new Buffer.from(ipaEntry.getData());
         if (buffer.length) {
@@ -390,15 +390,15 @@ function extractIpaIcon(filename,guid) {
             if(err){
               reject(err)
             } else {
-              var execResult = exec(path.join(__dirname, 'bin', 'pngdefry -s _tmp ') + ' ' + tmpOut)
-              if (execResult.stdout.indexOf('not an -iphone crushed PNG file') != -1) {
+              var execResult = exec(path.join(__dirname, 'bin', 'pngdefry -s _tmp ') + ' ' + tmpOut);
+              if (execResult.stdout.indexOf('not an -iphone crushed PNG file') !== -1) {
                 resolve({"success":true})
               } else {
                 fs.remove(tmpOut,function(err){
                   if(err){
                     reject(err)
                   } else {
-                    var tmp_path = iconsDir + "/{0}_tmp.png".format(guid)
+                    var tmp_path = iconsDir + "/{0}_tmp.png".format(guid);
                     fs.rename(tmp_path,tmpOut,function(err){
                       if(err){
                         reject(err)
@@ -417,7 +417,7 @@ function extractIpaIcon(filename,guid) {
         fs.writeFileSync(tmpOut, picSource);
         resolve({"success":true})
       }
-    })
+    });
     if (!found) {
       reject("can not find icon ")
     }

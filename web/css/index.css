@@ -46,7 +46,7 @@ a {
 }
 .header{ padding:0 1.4rem;}
 .header h2{ font-size:2.4rem; line-height:2.6rem; color:#4A4A4A; font-weight:bold; display:inline-block; padding:1.6rem 0;}
-.support { text-align: center; font-size:0.8rem; color:#9B9B9B;line-height: 3rem;}
+.support { text-align: center; font-size:0.8rem; color:#9B9B9B;line-height: 3rem; margin-top: 50px}
 .header .attention{ font-size:1.5rem; padding-left:1.2rem; position:relative;}
 .header .attention::before{ content:""; position:absolute; width:0.6rem; height:0.6rem; border-radius:50%; background:#ccc; left:0; top:0.4rem;}
 
@@ -67,8 +67,8 @@ a {
 /*app列表框*/
 .app_wrapper{ width:100%; position:relative; overflow-x:hidden; }
 .platform_wrapper{ width:100%; height:auto;  box-sizing:border-box; padding:0 1.4rem; border-top:1px solid #ccc; margin-top:1rem; background:#fff; }
-.platform_title {color: #0076cc;}
-.selected_title {color: darkgray;}
+.platform_title {color: darkgray;}
+.selected_title {color: #0076cc;}
 .platform_wrapper>span{ padding:0.6rem 0.6rem;display: flex; display: -webkit-flex; justify-content: space-around; padding-bottom:0; font-size:2rem; position:relative;}
 .platform_wrapper>li{ width:100%; padding-top:0.8rem; padding-bottom:0.8rem; border-bottom:1px solid #ccc;}
 .platform_wrapper .app_info{ padding: 0.5rem 0rem; height:6.6rem;}

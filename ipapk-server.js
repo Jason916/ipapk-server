@@ -156,7 +156,7 @@ function main() {
       var page = parseInt(req.params.page ? req.params.page : 1);
       if (req.params.platform === 'android' || req.params.platform === 'ios') {
         // group by bundleID
-        queryDB("select * from (select * from info where platform=? order by uploadTime desc limit ?,?) group by bundleID", [req.params.platform, (page - 1) * pageCount, page * pageCount], function(error, result) {
+        queryDB("select * from (select * from info where platform=? order by uploadTime desc) group by bundleID limit ?,?", [req.params.platform, (page - 1) * pageCount, page * pageCount], function(error, result) {
           if (result) {
             res.send(mapIconAndUrl(result))
           } else {
@@ -211,7 +211,7 @@ function main() {
         changelog = fields.changelog[0];
       }
       if (!files.package) {
-        errorHandler("params error",res)
+        errorHandler("params error",res);
         return
       }
       var obj = files.package[0];

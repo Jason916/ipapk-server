@@ -46,6 +46,7 @@ Options:
 -V, --version             output the version number
 -p, --port <port-number>  set port for server (defaults is 1234)
 -h, --host <host>     set host for server (defaults is your LAN ip)
+-a, --auth <token>     set token for server (defaults is false)
 ```
 
 ## 开启服务
@@ -189,7 +190,6 @@ response:
 
 
 # TODO
-- token验证
 - 国际化支持
 
 # 贡献

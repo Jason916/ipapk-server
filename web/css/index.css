@@ -73,6 +73,12 @@ a {
 .platform_wrapper>li{ width:100%; padding-top:0.8rem; padding-bottom:0.8rem; border-bottom:1px solid #ccc;}
 .platform_wrapper .app_info{ padding: 0.5rem 0rem; height:6.6rem;}
 .platform_wrapper img{ float:left; width:4.4rem; height:4.4rem; margin-right:0.8rem; border:1px solid #ccc; border-radius:20%; box-sizing:border-box;}
+@media screen and (max-width:320px){
+  .platform_wrapper img{
+    width:3rem;
+    height:3rem
+  }
+}
 
 .info_box{max-width:50%; height: 100%; float:left; padding-top:0.2rem;}
 .info_box span{ color:#aaa; padding-right:0.2rem; font-size:1rem; }
